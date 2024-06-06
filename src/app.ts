@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import userRoutes from "./routes/userRoutes";
-
+import cors from "cors";
 const app = express();
 
 app.get("/", (req, res) => {
@@ -12,7 +12,11 @@ app.get("/", (req, res) => {
 // Middleware
 app.use(morgan("dev"));
 app.use(bodyParser.json());
-
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 // Routes
 app.use("/api/users", userRoutes);
 
