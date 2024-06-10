@@ -26,7 +26,13 @@ export default class UserAuthModule {
         "SUPABASE_JWT_SECRET is not defined in environment variables"
       );
     }
-    const token = jwt.sign({ userId: user.id }, secret);
+    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: "1h" });
+    res.cookie("token", token, {
+      httpOnly: true,
+      // secure: true,
+      // maxAge: 1000000,
+      // signed: true,
+    });
     res.json({ token });
   }
 

@@ -3,6 +3,8 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import userRoutes from "./routes/userRoutes";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 const app = express();
 
 app.get("/", (req, res) => {
@@ -10,6 +12,7 @@ app.get("/", (req, res) => {
 });
 
 // Middleware
+app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(
