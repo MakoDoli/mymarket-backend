@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import UserAuthService from "../service/userAuthService.js";
 
 dotenv.config();
-const prisma = new PrismaClient();
 
 const authService = new UserAuthService();
 export async function signIn(req: Request, res: Response) {
@@ -19,6 +15,9 @@ export async function signUp(req: Request, res: Response) {
 
 export async function resetPassword(req: Request, res: Response) {
   authService.resetPassword(req, res);
+}
+export async function verifyEmail(req: Request, res: Response) {
+  authService.verifyEmail(req, res);
 }
 
 //JWT_SECRET="Tqyu1k2g+ZO+IU/DMWUoSzrHSvXYaLtC6OpTiOIc7ZdzajoQZxPbS/m8S7FOKfv0BLi4b8wHk1f8fIXTNEQHHw=="
