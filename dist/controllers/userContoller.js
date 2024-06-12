@@ -7,11 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import UserAuthService from "../service/userAuthService.js";
 dotenv.config();
-const prisma = new PrismaClient();
 const authService = new UserAuthService();
 export function signIn(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -26,6 +24,11 @@ export function signUp(req, res) {
 export function resetPassword(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         authService.resetPassword(req, res);
+    });
+}
+export function verifyEmail(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        authService.verifyEmail(req, res);
     });
 }
 //JWT_SECRET="Tqyu1k2g+ZO+IU/DMWUoSzrHSvXYaLtC6OpTiOIc7ZdzajoQZxPbS/m8S7FOKfv0BLi4b8wHk1f8fIXTNEQHHw=="

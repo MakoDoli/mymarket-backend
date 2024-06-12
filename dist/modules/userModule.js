@@ -75,4 +75,25 @@ export default class UserAuthModule {
             res.json({ message: "Password reset successful" });
         });
     }
+    verifyEmail(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { token } = req.params;
+            try {
+                const secret = process.env.SUPABASE_JWT_SECRET;
+                if (!secret) {
+                    throw new Error("SUPABASE_JWT_SECRET is not defined in environment variables");
+                }
+                const verifiedUSer = jwt.verify(token, secret);
+                const user = yield prisma.user.update({
+                    where: { id: verifiedUSer.userId },
+                    data: { emailVerified: true },
+                });
+                if (user)
+                    res.json({ message: "Email verified" });
+            }
+            catch (error) {
+                res.status(400).json({ error: "Invalid token" });
+            }
+        });
+    }
 }

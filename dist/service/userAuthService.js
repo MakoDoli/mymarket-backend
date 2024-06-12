@@ -10,4 +10,7 @@ export default class UserAuthService {
     resetPassword(req, res) {
         userAuthModule.resetPassword(req, res);
     }
+    verifyEmail(req, res) {
+        userAuthModule.verifyEmail(req, res);
+    }
 }
