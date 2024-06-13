@@ -4,14 +4,12 @@ import bodyParser from 'body-parser';
 import userRoutes from './routes/userRoutes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import ErrorHandler from './error/ErrorHandler';
 
 const app = express();
 
 app.get('/', (_, res) => {
   res.status(200).send('Ready to serve');
-});
-app.get('/hello', (_, res) => {
-  res.status(200).send('hello');
 });
 
 // Middleware
@@ -26,5 +24,12 @@ app.use(
 
 // Routes
 app.use('/api/users', userRoutes);
+
+//no matching url - not found - should be last after all routes
+app.all('*', ErrorHandler.notFound);
+
+app.use(ErrorHandler.handleErrors);
+process.on('uncaughtException', ErrorHandler.unCaughtException);
+process.on('unhandledRejection', ErrorHandler.unHandledRejection);
 
 export default app;

@@ -1,13 +1,19 @@
-import Joi from "joi";
-export const signUpSchema = Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().min(6).required(),
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.resetPasswordSchema = exports.signInSchema = exports.signUpSchema = void 0;
+const joi_1 = __importDefault(require("joi"));
+exports.signUpSchema = joi_1.default.object({
+    email: joi_1.default.string().email().required(),
+    password: joi_1.default.string().min(6).required(),
 });
-export const signInSchema = Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
+exports.signInSchema = joi_1.default.object({
+    email: joi_1.default.string().email().required(),
+    password: joi_1.default.string().required(),
 });
-export const resetPasswordSchema = Joi.object({
-    email: Joi.string().email().required(),
-    newPassword: Joi.string().min(6).required(),
+exports.resetPasswordSchema = joi_1.default.object({
+    email: joi_1.default.string().email().required(),
+    newPassword: joi_1.default.string().min(6).required(),
 });

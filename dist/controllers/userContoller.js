@@ -1,36 +1,29 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-import dotenv from "dotenv";
-import UserAuthService from "../service/userAuthService.js";
-dotenv.config();
-const authService = new UserAuthService();
-export function signIn(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        authService.login(req, res);
-    });
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.verifyEmail = exports.resetPassword = exports.signUp = exports.signIn = void 0;
+const dotenv_1 = __importDefault(require("dotenv"));
+const userAuthService_js_1 = __importDefault(require("../service/userAuthService.js"));
+dotenv_1.default.config();
+const authService = new userAuthService_js_1.default();
+async function signIn(req, res) {
+    authService.login(req, res);
 }
-export function signUp(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        authService.signup(req, res);
-    });
+exports.signIn = signIn;
+async function signUp(req, res) {
+    authService.signup(req, res);
 }
-export function resetPassword(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        authService.resetPassword(req, res);
-    });
+exports.signUp = signUp;
+async function resetPassword(req, res) {
+    authService.resetPassword(req, res);
 }
-export function verifyEmail(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        authService.verifyEmail(req, res);
-    });
+exports.resetPassword = resetPassword;
+async function verifyEmail(req, res) {
+    authService.verifyEmail(req, res);
 }
+exports.verifyEmail = verifyEmail;
 //JWT_SECRET="Tqyu1k2g+ZO+IU/DMWUoSzrHSvXYaLtC6OpTiOIc7ZdzajoQZxPbS/m8S7FOKfv0BLi4b8wHk1f8fIXTNEQHHw=="
 // Sign-Up
 // export const signUp = async (req: Request, res: Response) => {

@@ -1,12 +1,12 @@
-import { Router } from 'express';
-import { signUp, signIn, 
-//verifyEmail,
-resetPassword, verifyEmail, } from '../controllers/userContoller.js';
-import { validateRequest } from '../middleware/validateRequest.js';
-import { signUpSchema, signInSchema, resetPasswordSchema } from '../validators/userValidators.js';
-const router = Router();
-router.post('/signup', validateRequest(signUpSchema), signUp);
-router.post('/signin', validateRequest(signInSchema), signIn);
-router.get('/verify-email/:token', verifyEmail);
-router.post('/reset-password', validateRequest(resetPasswordSchema), resetPassword);
-export default router;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const userContoller_1 = require("../controllers/userContoller");
+const validateRequest_1 = require("../middleware/validateRequest");
+const userValidators_1 = require("../validators/userValidators");
+const router = (0, express_1.Router)();
+router.post('/signup', (0, validateRequest_1.validateRequest)(userValidators_1.signUpSchema), userContoller_1.signUp);
+router.post('/signin', (0, validateRequest_1.validateRequest)(userValidators_1.signInSchema), userContoller_1.signIn);
+router.get('/verify-email/:token', userContoller_1.verifyEmail);
+router.post('/reset-password', (0, validateRequest_1.validateRequest)(userValidators_1.resetPasswordSchema), userContoller_1.resetPassword);
+exports.default = router;

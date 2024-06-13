@@ -1,6 +1,11 @@
-import UserAuthModule from "../modules/userModule.js";
-const userAuthModule = new UserAuthModule();
-export default class UserAuthService {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const userModule_js_1 = __importDefault(require("../modules/userModule.js"));
+const userAuthModule = new userModule_js_1.default();
+class UserAuthService {
     login(req, res) {
         userAuthModule.login(req, res);
     }
@@ -14,3 +19,4 @@ export default class UserAuthService {
         userAuthModule.verifyEmail(req, res);
     }
 }
+exports.default = UserAuthService;
