@@ -29,6 +29,7 @@ app.use('/api/users', userRoutes);
 app.all('*', ErrorHandler.notFound);
 
 app.use(ErrorHandler.handleErrors);
+
 process.on('uncaughtException', ErrorHandler.unCaughtException);
 process.on('unhandledRejection', ErrorHandler.unHandledRejection);
 

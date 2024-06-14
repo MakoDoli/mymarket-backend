@@ -7,6 +7,7 @@ const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const ErrorHandler_1 = __importDefault(require("../error/ErrorHandler"));
 dotenv_1.default.config();
 const prisma = new client_1.PrismaClient();
 class UserAuthModule {
@@ -15,18 +16,20 @@ class UserAuthModule {
         const { email, password } = req.body;
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
-            return res.status(401).json({ error: "Invalid credentials" });
+            //return res.status(401).json({ error: 'Invalid credentials' });
+            return () => ErrorHandler_1.default.userNotFound;
         }
         const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ error: "Invalid credentials" });
+            //return res.status(401).json({ error: 'Invalid credentials' });
+            return () => ErrorHandler_1.default.userNotFound;
         }
         const secret = process.env.SUPABASE_JWT_SECRET;
         if (!secret) {
-            throw new Error("SUPABASE_JWT_SECRET is not defined in environment variables");
+            throw new Error('SUPABASE_JWT_SECRET is not defined in environment variables');
         }
-        const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: "1h" });
-        res.cookie("token", token, {
+        const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+        res.cookie('token', token, {
             httpOnly: true,
             // secure: true,
             // maxAge: 1000000,
@@ -46,7 +49,7 @@ class UserAuthModule {
                 },
             });
             // Send verification email logic here
-            res.status(201).json({ message: "User created", user });
+            res.status(201).json({ message: 'User created', user });
         }
         catch (error) {
             res.status(400).json({ error: "Couldn't create new user" });
@@ -56,21 +59,21 @@ class UserAuthModule {
         const { email, newPassword } = req.body;
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
-            return res.status(400).json({ error: "User not found" });
+            return res.status(400).json({ error: 'User not found' });
         }
         const hashedPassword = await bcrypt_1.default.hash(newPassword, 10);
         await prisma.user.update({
             where: { email },
             data: { password: hashedPassword },
         });
-        res.json({ message: "Password reset successful" });
+        res.json({ message: 'Password reset successful' });
     }
     async verifyEmail(req, res) {
         const { token } = req.params;
         try {
             const secret = process.env.SUPABASE_JWT_SECRET;
             if (!secret) {
-                throw new Error("SUPABASE_JWT_SECRET is not defined in environment variables");
+                throw new Error('SUPABASE_JWT_SECRET is not defined in environment variables');
             }
             const verifiedUSer = jsonwebtoken_1.default.verify(token, secret);
             const user = await prisma.user.update({
@@ -78,10 +81,10 @@ class UserAuthModule {
                 data: { emailVerified: true },
             });
             if (user)
-                res.json({ message: "Email verified" });
+                res.json({ message: 'Email verified' });
         }
         catch (error) {
-            res.status(400).json({ error: "Invalid token" });
+            res.status(400).json({ error: 'Invalid token' });
         }
     }
 }
