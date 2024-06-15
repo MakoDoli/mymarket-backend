@@ -33,6 +33,7 @@ export default class UserAuthModule {
       );
       return ErrorHandler.handleErrors(noSecret, req, res);
     }
+
     const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
     res.cookie('token', token, {
       httpOnly: true,
