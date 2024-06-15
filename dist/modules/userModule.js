@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,7 +30,7 @@ const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const ErrorHandler_1 = __importDefault(require("../error/ErrorHandler"));
+const ErrorHandler_1 = __importStar(require("../error/ErrorHandler"));
 dotenv_1.default.config();
 const prisma = new client_1.PrismaClient();
 class UserAuthModule {
@@ -17,16 +40,19 @@ class UserAuthModule {
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
             //return res.status(401).json({ error: 'Invalid credentials' });
-            return () => ErrorHandler_1.default.userNotFound;
+            const wrongUser = new ErrorHandler_1.CustomError(`User ${req.body.email} not found`, 404);
+            return ErrorHandler_1.default.handleErrors(wrongUser, req, res);
         }
         const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
             //return res.status(401).json({ error: 'Invalid credentials' });
-            return () => ErrorHandler_1.default.userNotFound;
+            const wrongPass = new ErrorHandler_1.CustomError('Invalid user or password', 404);
+            return ErrorHandler_1.default.handleErrors(wrongPass, req, res);
         }
         const secret = process.env.SUPABASE_JWT_SECRET;
         if (!secret) {
-            throw new Error('SUPABASE_JWT_SECRET is not defined in environment variables');
+            const noSecret = new ErrorHandler_1.CustomError('SUPABASE_JWT_SECRET is not defined in environment variables', 500);
+            return ErrorHandler_1.default.handleErrors(noSecret, req, res);
         }
         const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
         res.cookie('token', token, {

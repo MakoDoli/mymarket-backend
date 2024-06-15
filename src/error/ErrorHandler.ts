@@ -1,5 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
-class CustomError extends Error {
+export class CustomError extends Error {
   status: string;
   statusCode: number;
 
@@ -13,18 +13,18 @@ export default class ErrorHandler {
   constructor() {}
 
   static notFound(req: Request, _: Response, next: NextFunction) {
-    const err = new CustomError(`Can not find ${req.originalUrl} on this server`, 404);
+    const err = new CustomError(`Can not find ${req.originalUrl} on this server`, 400);
 
     next(err);
   }
 
-  static userNotFound(req: Request, _: Response, next: NextFunction) {
-    const err = new CustomError(`User ${req.body.email} not found`, 404);
+  // static userNotFound(req: Request, _: Response, next: NextFunction) {
+  //   const err = new CustomError(`User ${req.body.email} not found`, 404);
 
-    next(err);
-  }
+  //   next(err);
+  // }
 
-  static handleErrors(err: CustomError, _: Request, res: Response, next: NextFunction): void {
+  static handleErrors(err: CustomError, _: Request, res: Response, next?: NextFunction): void {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
     res.status(err.statusCode).json({
@@ -32,7 +32,7 @@ export default class ErrorHandler {
       statusCode: err.statusCode,
       message: err.message,
     });
-    next();
+    if (next) next();
   }
 
   static unCaughtException(err: Error) {
