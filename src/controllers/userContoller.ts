@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import dotenv from "dotenv";
-import UserAuthService from "../service/userAuthService.js";
+import { Request, Response } from 'express';
+import dotenv from 'dotenv';
+import UserAuthService from '../service/userAuthService.js';
 
 dotenv.config();
 
@@ -18,6 +18,9 @@ export async function resetPassword(req: Request, res: Response) {
 }
 export async function verifyEmail(req: Request, res: Response) {
   authService.verifyEmail(req, res);
+}
+export async function sendEmail(req: Request, res: Response) {
+  authService.sendEmail(req, res);
 }
 
 //JWT_SECRET="Tqyu1k2g+ZO+IU/DMWUoSzrHSvXYaLtC6OpTiOIc7ZdzajoQZxPbS/m8S7FOKfv0BLi4b8wHk1f8fIXTNEQHHw=="

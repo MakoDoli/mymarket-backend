@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPasswordSchema = exports.signInSchema = exports.signUpSchema = void 0;
+exports.sendEmailSchema = exports.resetPasswordSchema = exports.signInSchema = exports.signUpSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 exports.signUpSchema = joi_1.default.object({
     email: joi_1.default.string().email().required(),
@@ -16,4 +16,7 @@ exports.signInSchema = joi_1.default.object({
 exports.resetPasswordSchema = joi_1.default.object({
     email: joi_1.default.string().email().required(),
     newPassword: joi_1.default.string().min(6).required(),
+});
+exports.sendEmailSchema = joi_1.default.object({
+    email: joi_1.default.string().email().required(),
 });

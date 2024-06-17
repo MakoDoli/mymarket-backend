@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyEmail = exports.resetPassword = exports.signUp = exports.signIn = void 0;
+exports.sendEmail = exports.verifyEmail = exports.resetPassword = exports.signUp = exports.signIn = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const userAuthService_js_1 = __importDefault(require("../service/userAuthService.js"));
 dotenv_1.default.config();
@@ -24,6 +24,10 @@ async function verifyEmail(req, res) {
     authService.verifyEmail(req, res);
 }
 exports.verifyEmail = verifyEmail;
+async function sendEmail(req, res) {
+    authService.sendEmail(req, res);
+}
+exports.sendEmail = sendEmail;
 //JWT_SECRET="Tqyu1k2g+ZO+IU/DMWUoSzrHSvXYaLtC6OpTiOIc7ZdzajoQZxPbS/m8S7FOKfv0BLi4b8wHk1f8fIXTNEQHHw=="
 // Sign-Up
 // export const signUp = async (req: Request, res: Response) => {

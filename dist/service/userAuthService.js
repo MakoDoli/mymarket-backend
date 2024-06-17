@@ -15,6 +15,9 @@ class UserAuthService {
     resetPassword(req, res) {
         userAuthModule.resetPassword(req, res);
     }
+    sendEmail(req, res) {
+        userAuthModule.sendEmail(req, res);
+    }
     verifyEmail(req, res) {
         userAuthModule.verifyEmail(req, res);
     }
