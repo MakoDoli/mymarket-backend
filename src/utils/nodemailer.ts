@@ -1,15 +1,24 @@
 import nodemailer from 'nodemailer';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
-const transportOPtions: SMTPTransport.Options = {
-  host: process.env.MAIL_HOST,
-  port: 2525,
-  secure: false,
+// import SMTPTransport from 'nodemailer/lib/smtp-transport';
+// const transportOPtions: SMTPTransport.Options = {
+//   host: process.env.MAIL_HOST,
+//   port: 2525,
+//   secure: false,
+//   auth: {
+//     user: process.env.MAIL_USER,
+//     pass: process.env.MAIL_PASSWORD,
+//   },
+// };
+
+const realEmailtransportOptions = {
+  service: 'gmail.com',
+  port: 465,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASSWORD,
   },
 };
-const transport = nodemailer.createTransport(transportOPtions);
+const transport = nodemailer.createTransport(realEmailtransportOptions);
 
 type Props = {
   recipient: string;

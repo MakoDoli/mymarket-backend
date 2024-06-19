@@ -5,16 +5,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const transportOPtions = {
-    host: process.env.MAIL_HOST,
-    port: 2525,
-    secure: false,
+// import SMTPTransport from 'nodemailer/lib/smtp-transport';
+// const transportOPtions: SMTPTransport.Options = {
+//   host: process.env.MAIL_HOST,
+//   port: 2525,
+//   secure: false,
+//   auth: {
+//     user: process.env.MAIL_USER,
+//     pass: process.env.MAIL_PASSWORD,
+//   },
+// };
+const realEmailtransportOptions = {
+    service: 'gmail.com',
+    port: 465,
     auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASSWORD,
     },
 };
-const transport = nodemailer_1.default.createTransport(transportOPtions);
+const transport = nodemailer_1.default.createTransport(realEmailtransportOptions);
 const sendEmail = async ({ recipient, subject, token }) => {
     const link = `http://localhost:3000/api/users/verify-email/${token}`;
     try {
