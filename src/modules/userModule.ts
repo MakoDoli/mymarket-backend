@@ -36,12 +36,16 @@ export default class UserAuthModule {
     //          SENDING JWT
 
     const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
-    res.cookie('token', token, {
-      httpOnly: true,
-      // secure: true,
-      // maxAge: 1000000,
-      // signed: true,
-    });
+    const refreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1d' });
+    console.log(refreshToken);
+    res
+      .cookie('token', token, {
+        httpOnly: true,
+        // secure: true,
+        // maxAge: 1000000,
+        // signed: true,
+      })
+      .header('Authorization', 'Bearer ' + refreshToken);
     res.json({ token });
     console.log(user);
   }
@@ -63,6 +67,25 @@ export default class UserAuthModule {
       return ErrorHandler.handleErrors(newUserError, req, res);
     }
     res.status(400).json({ error: "Couldn't create new user" });
+  }
+
+  async requestNewToken(req: Request, res: Response) {
+    const refreshToken = req.cookies['refreshToken'];
+    if (!refreshToken) {
+      return ErrorHandler.handleErrors(new CustomError(ERROR_CODES.invalidToken, 400), req, res);
+    }
+
+    const secret = process.env.SUPABASE_JWT_SECRET;
+    if (!secret) {
+      return ErrorHandler.handleErrors(new CustomError(ERROR_CODES.noSecret, 400), req, res);
+    }
+    const decodedToken = jwt.verify(refreshToken, secret) as { userId: number };
+    const user = await prisma.user.findUnique({ where: { id: decodedToken.userId } });
+    if (!user) {
+      return ErrorHandler.handleErrors(new CustomError(ERROR_CODES.invalidToken, 400), req, res);
+    }
+    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+    res.header('Authorization', token).send(user);
   }
 
   async sendEmail(req: Request, res: Response) {

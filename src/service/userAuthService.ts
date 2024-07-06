@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import UserAuthModule from "../modules/userModule.js";
+import { Request, Response } from 'express';
+import UserAuthModule from '../modules/userModule.js';
 
 const userAuthModule = new UserAuthModule();
 
@@ -10,11 +10,14 @@ export default class UserAuthService {
   signup(req: Request, res: Response) {
     userAuthModule.signUp(req, res);
   }
+  requestNewToken(req: Request, res: Response) {
+    userAuthModule.requestNewToken(req, res);
+  }
   resetPassword(req: Request, res: Response) {
     userAuthModule.resetPassword(req, res);
   }
-  sendEmail(req:Request, res:Response){
-    userAuthModule.sendEmail(req, res)
+  sendEmail(req: Request, res: Response) {
+    userAuthModule.sendEmail(req, res);
   }
   verifyEmail(req: Request, res: Response) {
     userAuthModule.verifyEmail(req, res);

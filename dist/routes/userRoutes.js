@@ -7,6 +7,7 @@ const userValidators_1 = require("../validators/userValidators");
 const router = (0, express_1.Router)();
 router.post('/signup', (0, validateRequest_1.validateRequest)(userValidators_1.signUpSchema), userContoller_1.signUp);
 router.post('/signin', (0, validateRequest_1.validateRequest)(userValidators_1.signInSchema), userContoller_1.signIn);
+router.post('/refresh', userContoller_1.requestNewToken);
 router.post('/verify-email', (0, validateRequest_1.validateRequest)(userValidators_1.sendEmailSchema), userContoller_1.sendEmail);
 router.get('/verify-email/:token', userContoller_1.verifyEmail);
 router.post('/reset-password', (0, validateRequest_1.validateRequest)(userValidators_1.resetPasswordSchema), userContoller_1.resetPassword);
