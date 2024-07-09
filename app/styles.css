@@ -7,19 +7,29 @@ body {
   align-items: center;
   font-family: Verdana, sans-serif;
   color: rgb(34, 42, 49);
-  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, rgb(2, 31, 63), rgb(12, 41, 43));
+  padding: 20px;
 }
+
 form {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-around;
   align-items: flex-start;
-  width: 300px;
+  width: 500px;
   min-height: 300px;
   border-radius: 10px;
-  background-color: lightblue;
+  background: linear-gradient(to top left, rgb(12, 31, 43), rgb(12, 41, 73));
   padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
+@media screen and (max-width: 640px) {
+  form {
+    width: 300px;
+  }
+}
+
 input,
 button {
   border-radius: 8px;
@@ -50,4 +60,11 @@ li:nth-child(even) {
 }
 li:nth-child(odd) {
   background-color: palegreen;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
 }
