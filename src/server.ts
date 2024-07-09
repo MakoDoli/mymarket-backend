@@ -32,8 +32,8 @@ const io = new Server(expressServer, {
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
 
-  socket.on('message', (message) => {
-    io.emit('message', `${socket.id.substring(0, 3)} said: ${message} `);
+  socket.on('message', (message, name) => {
+    io.emit('message', `${name} said:  ${message} `);
   });
 });
 
