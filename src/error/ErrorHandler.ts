@@ -1,4 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
+
 export class CustomError extends Error {
   status: string;
   statusCode: number;
@@ -7,6 +8,7 @@ export class CustomError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.status = this.statusCode >= 400 && this.statusCode < 500 ? 'fail' : 'error';
+    Error.captureStackTrace(this, this.constructor);
   }
 }
 export default class ErrorHandler {
@@ -37,11 +39,13 @@ export default class ErrorHandler {
 
   static unCaughtException(err: Error) {
     console.error('Uncaught exception ' + err);
+
     process.exit(1);
   }
 
   static unHandledRejection(err: Error) {
     console.error(`Unhandled rejection occurred! ${err} Shutting down! `);
+
     process.exit(1);
   }
 }

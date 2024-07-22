@@ -35,7 +35,7 @@ export default class UserAuthModule {
 
     //          SENDING JWT
 
-    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '10min' });
     const refreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1d' });
     console.log(refreshToken);
     res
@@ -46,7 +46,7 @@ export default class UserAuthModule {
         // signed: true,
       })
       .header('Authorization', 'Bearer ' + refreshToken);
-    res.json({ token });
+    res.json({ status: 'success', token });
     console.log(user);
   }
 
@@ -66,7 +66,7 @@ export default class UserAuthModule {
       const newUserError = new CustomError(ERROR_CODES.newUserFail, 400);
       return ErrorHandler.handleErrors(newUserError, req, res);
     }
-    res.status(400).json({ error: "Couldn't create new user" });
+    res.status(200).json({ status: 'success', message: 'User was successfully created' });
   }
 
   async requestNewToken(req: Request, res: Response) {

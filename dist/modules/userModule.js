@@ -57,7 +57,7 @@ class UserAuthModule {
             return ErrorHandler_1.default.handleErrors(noSecret, req, res);
         }
         //          SENDING JWT
-        const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '10min' });
         const refreshToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1d' });
         console.log(refreshToken);
         res
@@ -68,7 +68,7 @@ class UserAuthModule {
             // signed: true,
         })
             .header('Authorization', 'Bearer ' + refreshToken);
-        res.json({ token });
+        res.json({ status: 'success', token });
         console.log(user);
     }
     async signUp(req, res) {
@@ -85,7 +85,7 @@ class UserAuthModule {
             const newUserError = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.newUserFail, 400);
             return ErrorHandler_1.default.handleErrors(newUserError, req, res);
         }
-        res.status(400).json({ error: "Couldn't create new user" });
+        res.status(200).json({ status: 'success', message: 'User was successfully created' });
     }
     async requestNewToken(req, res) {
         const refreshToken = req.cookies['refreshToken'];

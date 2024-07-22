@@ -6,6 +6,7 @@ class CustomError extends Error {
         super(message);
         this.statusCode = statusCode;
         this.status = this.statusCode >= 400 && this.statusCode < 500 ? 'fail' : 'error';
+        Error.captureStackTrace(this, this.constructor);
     }
 }
 exports.CustomError = CustomError;
