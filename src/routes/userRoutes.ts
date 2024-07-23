@@ -14,6 +14,7 @@ import {
   resetPasswordSchema,
   sendEmailSchema,
 } from '../validators/userValidators';
+import verifyToken from '../middleware/verifyToken';
 
 const router = Router();
 
@@ -27,6 +28,10 @@ router.post('/verify-email', validateRequest(sendEmailSchema), sendEmail);
 
 router.get('/verify-email/:token', verifyEmail);
 
-router.post('/reset-password', validateRequest(resetPasswordSchema), resetPassword);
+router.post('/reset-password', verifyToken, validateRequest(resetPasswordSchema), resetPassword);
+
+router.get('/check-auth', verifyToken, (_, res) => {
+  res.status(200).json({ status: 'ok', message: 'User is authenticated', authenticated: true });
+});
 
 export default router;

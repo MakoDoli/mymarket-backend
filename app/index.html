@@ -3,21 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Chat App</title>
     <link href="styles.css" rel="stylesheet" />
     <script src="https://cdn.socket.io/socket.io-3.0.0.js"></script>
     <script defer src="app.js"></script>
   </head>
   <body>
-    <form>
-      <div class="container">
-        <input class="username" type="text" placeholder="Enter your name" required />
+    <div>
+      <div class="status">
+        <p>
+          Welcome to the chat app! 😎 </span>
+        </p>
+        <div class="show-login hidden">
+          <p>You are <span>Logged in<span class="logged-in-dot"></span></p>
+        </div>
+        <button class="login-button active">Sign in</button>
+        <form class="loginForm hidden">
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button class="signinSubmit" type="submit">Sign In</button>
+      </form>
+        <button class="signup-button active">Sign Up</button>
       </div>
-      <ul></ul>
-      <div class="container">
-        <input class="message" type="text" />
-        <button>send</button>
-      </div>
-    </form>
+      <form>
+        <div class="container">
+          <input class="username" type="text" placeholder="Enter your name" required />
+        </div>
+        <ul></ul>
+        <div class="container">
+          <input class="message" type="text" />
+          <button>send</button>
+        </div>
+      </form>
+    </div>
   </body>
 </html>

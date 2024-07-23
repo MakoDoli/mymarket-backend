@@ -39,6 +39,7 @@ button {
   padding: 0 10px;
   border-color: transparent;
   font-family: Verdana;
+  cursor: pointer;
 }
 
 ul {
@@ -67,4 +68,38 @@ li:nth-child(odd) {
   justify-content: center;
   align-items: flex-start;
   height: 100%;
+}
+.status {
+  color: white;
+  margin-bottom: 20px;
+}
+.login-button,
+.signup-button {
+  display: none;
+}
+.active {
+  display: inline-block;
+}
+.hidden {
+  display: none;
+}
+.show-login {
+  margin: 5px 0;
+}
+.logged-in-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #32cd32, #00ff00);
+  display: inline-block;
+  margin-left: 5px;
+}
+.loginForm {
+  min-height: 200px;
+}
+.loginForm input {
+  background-color: palegoldenrod;
+}
+.loginForm button {
+  background-color: palegreen;
 }
