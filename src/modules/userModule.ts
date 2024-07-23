@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -10,20 +10,26 @@ import { sendEmail } from '../utils/nodemailer';
 dotenv.config();
 const prisma = new PrismaClient();
 
+type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<void>;
+
+const catchAsync = (fn: AsyncHandler) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    fn(req, res, next).catch(next);
+  };
+};
+
 export default class UserAuthModule {
   constructor() {}
 
-  async login(req: Request, res: Response) {
+  login = catchAsync(async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
-      //return res.status(401).json({ error: 'Invalid credentials' });
       const wrongUser = new CustomError(ERROR_CODES.wrongUser, 404);
       return ErrorHandler.handleErrors(wrongUser, req, res);
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      //return res.status(401).json({ error: 'Invalid credentials' });
       const wrongPass = new CustomError(ERROR_CODES.wrongPassword, 404);
       return ErrorHandler.handleErrors(wrongPass, req, res);
     }
@@ -48,9 +54,9 @@ export default class UserAuthModule {
       .header('Authorization', 'Bearer ' + refreshToken);
     res.json({ status: 'success', token });
     console.log(user);
-  }
+  });
 
-  async signUp(req: Request, res: Response) {
+  signUp = catchAsync(async (req: Request, res: Response) => {
     const { email, password } = req.body;
     console.log(email, password);
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -67,9 +73,9 @@ export default class UserAuthModule {
       return ErrorHandler.handleErrors(newUserError, req, res);
     }
     res.status(200).json({ status: 'success', message: 'User was successfully created' });
-  }
+  });
 
-  async requestNewToken(req: Request, res: Response) {
+  requestNewToken = catchAsync(async (req: Request, res: Response) => {
     const refreshToken = req.cookies['refreshToken'];
     if (!refreshToken) {
       return ErrorHandler.handleErrors(new CustomError(ERROR_CODES.invalidToken, 400), req, res);
@@ -86,9 +92,9 @@ export default class UserAuthModule {
     }
     const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
     res.header('Authorization', token).send(user);
-  }
+  });
 
-  async sendEmail(req: Request, res: Response) {
+  sendEmail = catchAsync(async (req: Request, res: Response) => {
     const { email } = req.body;
     const token = req.headers.authorization;
 
@@ -96,9 +102,9 @@ export default class UserAuthModule {
       sendEmail({ recipient: email, subject: 'verify your email', token: token });
     }
     res.send(token);
-  }
+  });
 
-  async resetPassword(req: Request, res: Response) {
+  resetPassword = catchAsync(async (req: Request, res: Response) => {
     const { email, newPassword } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
@@ -110,9 +116,9 @@ export default class UserAuthModule {
       data: { password: hashedPassword },
     });
     res.json({ message: 'Password reset successful' });
-  }
+  });
 
-  async verifyEmail(req: Request, res: Response) {
+  verifyEmail = catchAsync(async (req: Request, res: Response) => {
     const token = req.params.token;
     console.log(token);
 
@@ -134,5 +140,5 @@ export default class UserAuthModule {
     if (!user)
       return ErrorHandler.handleErrors(new CustomError(ERROR_CODES.invalidToken, 400), req, res);
     res.json({ message: 'Email verified', token, verifiedUSer, user });
-  }
+  });
 }
