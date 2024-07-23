@@ -14,7 +14,7 @@ const path_1 = __importDefault(require("path"));
 const socket_io_1 = require("socket.io");
 // Setup express server
 const app = (0, express_1.default)();
-app.get('/', (_, res) => {
+app.get(['/', '/status'], (_, res) => {
     res.status(200).send('Ready to serve');
 });
 const PORT = process.env.PORT || 3000;

@@ -1,25 +1,25 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import UserAuthModule from '../modules/userModule.js';
 
 const userAuthModule = new UserAuthModule();
 
 export default class UserAuthService {
-  login(req: Request, res: Response) {
-    userAuthModule.login(req, res);
+  login(req: Request, res: Response, next: NextFunction) {
+    userAuthModule.login(req, res, next);
   }
-  signup(req: Request, res: Response) {
-    userAuthModule.signUp(req, res);
+  signup(req: Request, res: Response, next: NextFunction) {
+    userAuthModule.signUp(req, res, next);
   }
-  requestNewToken(req: Request, res: Response) {
-    userAuthModule.requestNewToken(req, res);
+  requestNewToken(req: Request, res: Response, next: NextFunction) {
+    userAuthModule.requestNewToken(req, res, next);
   }
-  resetPassword(req: Request, res: Response) {
-    userAuthModule.resetPassword(req, res);
+  resetPassword(req: Request, res: Response, next: NextFunction) {
+    userAuthModule.resetPassword(req, res, next);
   }
-  sendEmail(req: Request, res: Response) {
-    userAuthModule.sendEmail(req, res);
+  sendEmail(req: Request, res: Response, next: NextFunction) {
+    userAuthModule.sendEmail(req, res, next);
   }
-  verifyEmail(req: Request, res: Response) {
-    userAuthModule.verifyEmail(req, res);
+  verifyEmail(req: Request, res: Response, next: NextFunction) {
+    userAuthModule.verifyEmail(req, res, next);
   }
 }

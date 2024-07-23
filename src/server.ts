@@ -11,7 +11,7 @@ import { Server } from 'socket.io';
 // Setup express server
 const app = express();
 
-app.get('/', (_, res) => {
+app.get(['/', '/status'], (_, res) => {
   res.status(200).send('Ready to serve');
 });
 

@@ -35,116 +35,120 @@ const errorCodes_1 = require("../error/errorCodes");
 const nodemailer_1 = require("../utils/nodemailer");
 dotenv_1.default.config();
 const prisma = new client_1.PrismaClient();
+const catchAsync = (fn) => {
+    return (req, res, next) => {
+        fn(req, res, next).catch(next);
+    };
+};
 class UserAuthModule {
-    constructor() { }
-    async login(req, res) {
-        const { email, password } = req.body;
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-            //return res.status(401).json({ error: 'Invalid credentials' });
-            const wrongUser = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongUser, 404);
-            return ErrorHandler_1.default.handleErrors(wrongUser, req, res);
-        }
-        const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
-        if (!isPasswordValid) {
-            //return res.status(401).json({ error: 'Invalid credentials' });
-            const wrongPass = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongPassword, 404);
-            return ErrorHandler_1.default.handleErrors(wrongPass, req, res);
-        }
-        const secret = process.env.SUPABASE_JWT_SECRET;
-        if (!secret) {
-            const noSecret = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.noSecret, 500);
-            return ErrorHandler_1.default.handleErrors(noSecret, req, res);
-        }
-        //          SENDING JWT
-        const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
-        const refreshToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1d' });
-        console.log(refreshToken);
-        res
-            .cookie('token', token, {
-            httpOnly: true,
-            // secure: true,
-            // maxAge: 1000000,
-            // signed: true,
-        })
-            .header('Authorization', 'Bearer ' + refreshToken);
-        res.json({ token });
-        console.log(user);
-    }
-    async signUp(req, res) {
-        const { email, password } = req.body;
-        console.log(email, password);
-        const hashedPassword = await bcrypt_1.default.hash(password, 10);
-        const user = await prisma.user.create({
-            data: {
-                email,
-                password: hashedPassword,
-            },
+    constructor() {
+        this.login = catchAsync(async (req, res) => {
+            const { email, password } = req.body;
+            const user = await prisma.user.findUnique({ where: { email } });
+            if (!user) {
+                const wrongUser = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongUser, 404);
+                return ErrorHandler_1.default.handleErrors(wrongUser, req, res);
+            }
+            const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
+            if (!isPasswordValid) {
+                const wrongPass = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongPassword, 404);
+                return ErrorHandler_1.default.handleErrors(wrongPass, req, res);
+            }
+            const secret = process.env.SUPABASE_JWT_SECRET;
+            if (!secret) {
+                const noSecret = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.noSecret, 500);
+                return ErrorHandler_1.default.handleErrors(noSecret, req, res);
+            }
+            //          SENDING JWT
+            const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '10min' });
+            const refreshToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1d' });
+            console.log(refreshToken);
+            res
+                .cookie('token', token, {
+                httpOnly: true,
+                // secure: true,
+                // maxAge: 1000000,
+                // signed: true,
+            })
+                .header('Authorization', 'Bearer ' + refreshToken);
+            res.json({ status: 'success', token });
+            console.log(user);
         });
-        if (!user) {
-            const newUserError = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.newUserFail, 400);
-            return ErrorHandler_1.default.handleErrors(newUserError, req, res);
-        }
-        res.status(400).json({ error: "Couldn't create new user" });
-    }
-    async requestNewToken(req, res) {
-        const refreshToken = req.cookies['refreshToken'];
-        if (!refreshToken) {
-            return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.invalidToken, 400), req, res);
-        }
-        const secret = process.env.SUPABASE_JWT_SECRET;
-        if (!secret) {
-            return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.noSecret, 400), req, res);
-        }
-        const decodedToken = jsonwebtoken_1.default.verify(refreshToken, secret);
-        const user = await prisma.user.findUnique({ where: { id: decodedToken.userId } });
-        if (!user) {
-            return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.invalidToken, 400), req, res);
-        }
-        const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
-        res.header('Authorization', token).send(user);
-    }
-    async sendEmail(req, res) {
-        const { email } = req.body;
-        const token = req.headers.authorization;
-        if (token) {
-            (0, nodemailer_1.sendEmail)({ recipient: email, subject: 'verify your email', token: token });
-        }
-        res.send(token);
-    }
-    async resetPassword(req, res) {
-        const { email, newPassword } = req.body;
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-            return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongUser, 400), req, res);
-        }
-        const hashedPassword = await bcrypt_1.default.hash(newPassword, 10);
-        await prisma.user.update({
-            where: { email },
-            data: { password: hashedPassword },
+        this.signUp = catchAsync(async (req, res) => {
+            const { email, password } = req.body;
+            console.log(email, password);
+            const hashedPassword = await bcrypt_1.default.hash(password, 10);
+            const user = await prisma.user.create({
+                data: {
+                    email,
+                    password: hashedPassword,
+                },
+            });
+            if (!user) {
+                const newUserError = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.newUserFail, 400);
+                return ErrorHandler_1.default.handleErrors(newUserError, req, res);
+            }
+            res.status(200).json({ status: 'success', message: 'User was successfully created' });
         });
-        res.json({ message: 'Password reset successful' });
-    }
-    async verifyEmail(req, res) {
-        const token = req.params.token;
-        console.log(token);
-        const secret = process.env.SUPABASE_JWT_SECRET;
-        if (!secret) {
-            return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.noSecret, 400), req, res);
-        }
-        if (!token) {
-            const noToken = new ErrorHandler_1.CustomError('Not authenticated', 404);
-            return ErrorHandler_1.default.handleErrors(noToken, req, res);
-        }
-        const verifiedUSer = jsonwebtoken_1.default.verify(token, secret);
-        console.log(verifiedUSer);
-        const user = await prisma.user.update({
-            where: { id: verifiedUSer.userId },
-            data: { emailVerified: true },
+        this.requestNewToken = catchAsync(async (req, res) => {
+            const refreshToken = req.cookies['refreshToken'];
+            if (!refreshToken) {
+                return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.invalidToken, 400), req, res);
+            }
+            const secret = process.env.SUPABASE_JWT_SECRET;
+            if (!secret) {
+                return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.noSecret, 400), req, res);
+            }
+            const decodedToken = jsonwebtoken_1.default.verify(refreshToken, secret);
+            const user = await prisma.user.findUnique({ where: { id: decodedToken.userId } });
+            if (!user) {
+                return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.invalidToken, 400), req, res);
+            }
+            const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+            res.header('Authorization', token).send(user);
         });
-        if (!user)
-            return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.invalidToken, 400), req, res);
-        res.json({ message: 'Email verified', token, verifiedUSer, user });
+        this.sendEmail = catchAsync(async (req, res) => {
+            const { email } = req.body;
+            const token = req.headers.authorization;
+            if (token) {
+                (0, nodemailer_1.sendEmail)({ recipient: email, subject: 'verify your email', token: token });
+            }
+            res.send(token);
+        });
+        this.resetPassword = catchAsync(async (req, res) => {
+            const { email, newPassword } = req.body;
+            const user = await prisma.user.findUnique({ where: { email } });
+            if (!user) {
+                return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongUser, 400), req, res);
+            }
+            const hashedPassword = await bcrypt_1.default.hash(newPassword, 10);
+            await prisma.user.update({
+                where: { email },
+                data: { password: hashedPassword },
+            });
+            res.json({ message: 'Password reset successful' });
+        });
+        this.verifyEmail = catchAsync(async (req, res) => {
+            const token = req.params.token;
+            console.log(token);
+            const secret = process.env.SUPABASE_JWT_SECRET;
+            if (!secret) {
+                return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.noSecret, 400), req, res);
+            }
+            if (!token) {
+                const noToken = new ErrorHandler_1.CustomError('Not authenticated', 404);
+                return ErrorHandler_1.default.handleErrors(noToken, req, res);
+            }
+            const verifiedUSer = jsonwebtoken_1.default.verify(token, secret);
+            console.log(verifiedUSer);
+            const user = await prisma.user.update({
+                where: { id: verifiedUSer.userId },
+                data: { emailVerified: true },
+            });
+            if (!user)
+                return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.invalidToken, 400), req, res);
+            res.json({ message: 'Email verified', token, verifiedUSer, user });
+        });
     }
 }
 exports.default = UserAuthModule;

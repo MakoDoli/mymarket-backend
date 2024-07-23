@@ -6,23 +6,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const userModule_js_1 = __importDefault(require("../modules/userModule.js"));
 const userAuthModule = new userModule_js_1.default();
 class UserAuthService {
-    login(req, res) {
-        userAuthModule.login(req, res);
+    login(req, res, next) {
+        userAuthModule.login(req, res, next);
     }
-    signup(req, res) {
-        userAuthModule.signUp(req, res);
+    signup(req, res, next) {
+        userAuthModule.signUp(req, res, next);
     }
-    requestNewToken(req, res) {
-        userAuthModule.requestNewToken(req, res);
+    requestNewToken(req, res, next) {
+        userAuthModule.requestNewToken(req, res, next);
     }
-    resetPassword(req, res) {
-        userAuthModule.resetPassword(req, res);
+    resetPassword(req, res, next) {
+        userAuthModule.resetPassword(req, res, next);
     }
-    sendEmail(req, res) {
-        userAuthModule.sendEmail(req, res);
+    sendEmail(req, res, next) {
+        userAuthModule.sendEmail(req, res, next);
     }
-    verifyEmail(req, res) {
-        userAuthModule.verifyEmail(req, res);
+    verifyEmail(req, res, next) {
+        userAuthModule.verifyEmail(req, res, next);
     }
 }
 exports.default = UserAuthService;
