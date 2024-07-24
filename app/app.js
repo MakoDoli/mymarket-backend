@@ -1,6 +1,6 @@
 const socket = io('ws://localhost:3000');
 
-document.querySelector('form').addEventListener('submit', sendMessage);
+document.querySelector('.message-form').addEventListener('submit', sendMessage);
 
 function sendMessage(e) {
   e.preventDefault();
