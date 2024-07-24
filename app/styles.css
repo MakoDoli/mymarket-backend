@@ -73,6 +73,11 @@ li:nth-child(odd) {
   color: white;
   margin-bottom: 20px;
 }
+.buttons-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
 .login-button,
 .signup-button {
   display: none;
@@ -86,16 +91,25 @@ li:nth-child(odd) {
 .show-login {
   margin: 5px 0;
 }
-.logged-in-dot {
+.logged-in-dot,
+.signin-dot,
+.signup-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #32cd32, #00ff00);
+  background: linear-gradient(135deg, #3fb83f, #00ff00);
   display: inline-block;
   margin-left: 5px;
 }
+.signin-dot {
+  background: linear-gradient(135deg, #3775d1, #00e1ff);
+}
+.signup-dot {
+  background: linear-gradient(135deg, #ce7005, #dd9f2c);
+}
 .loginForm {
   min-height: 200px;
+  margin: 5px 0;
 }
 .loginForm input {
   background-color: palegoldenrod;
