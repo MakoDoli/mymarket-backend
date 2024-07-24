@@ -14,17 +14,37 @@
         <p>
           Welcome to the chat app! 😎 </span>
         </p>
+        
         <div class="show-login hidden">
           <p>You are <span>Logged in<span class="logged-in-dot"></span></p>
         </div>
-        <button class="login-button active">Sign in</button>
-        <form class="loginForm hidden">
+        <div class="buttons-container">
+        
+          <div class="login-button active">  
+              <button class="login-button active">Sign in</button>
+              <span class="signin-dot"></span>
+          </div>
+        
+          <div class="signup-button active">
+               <button class="signup-button active">Sign Up</button>
+          <span class="signup-dot"></span>
+          </div>
+          </div>
+      
+          <form class="loginForm hidden">
           <input type="email" name="email" placeholder="Email" required>
           <input type="password" name="password" placeholder="Password" required>
           <button class="signinSubmit" type="submit">Sign In</button>
-      </form>
-        <button class="signup-button active">Sign Up</button>
-      </div>
+          </form>
+          <form class="signupForm hidden">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password min 6 chars" minlength="6" required>
+            <input type="password" name="confirm" placeholder="Repeat Password" required>
+            <button class="signinSubmit" type="submit">Sign Up</button>
+            </form>
+    </div>
+      
+      
       <form>
         <div class="container">
           <input class="username" type="text" placeholder="Enter your name" required />
@@ -32,7 +52,7 @@
         <ul></ul>
         <div class="container">
           <input class="message" type="text" />
-          <button>send</button>
+          <button class="send-button hidden ">send</button>
         </div>
       </form>
     </div>
