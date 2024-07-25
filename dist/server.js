@@ -12,8 +12,15 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const ErrorHandler_1 = __importDefault(require("./error/ErrorHandler"));
 const path_1 = __importDefault(require("path"));
 const socket_io_1 = require("socket.io");
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // Setup express server
 const app = (0, express_1.default)();
+const limiter = (0, express_rate_limit_1.default)({
+    max: 5,
+    windowMs: 1 * 60 * 1000,
+    message: 'Too many requests from this IP, please try again later.',
+});
+app.use('/', limiter);
 app.get(['/', '/status'], (_, res) => {
     res.status(200).send('Ready to serve');
 });
