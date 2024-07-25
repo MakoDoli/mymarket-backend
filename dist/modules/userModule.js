@@ -60,7 +60,7 @@ class UserAuthModule {
                 return ErrorHandler_1.default.handleErrors(noSecret, req, res);
             }
             //          SENDING JWT
-            const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '10min' });
+            const token = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1min' });
             const refreshToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1d' });
             console.log(refreshToken);
             res

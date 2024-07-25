@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   //   SIGN -IN
-  loginForm.addEventListener('submit', async () => {
-    //event.preventDefault();
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
     const formData = new FormData(loginForm);
     const email = formData.get('email');
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(data);
       return data;
     } catch (err) {
-      console.error('Failed to sign in', err);
+      console.error('Failed to sign up', err);
     }
   }
 });

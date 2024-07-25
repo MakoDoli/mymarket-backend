@@ -41,7 +41,7 @@ export default class UserAuthModule {
 
     //          SENDING JWT
 
-    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '10min' });
+    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1min' });
     const refreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1d' });
     console.log(refreshToken);
     res

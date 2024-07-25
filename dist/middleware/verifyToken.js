@@ -57,8 +57,8 @@ const verifyToken = async (req, res, next) => {
                     const userNotFoundError = new ErrorHandler_1.CustomError('User not found', 404);
                     return ErrorHandler_1.default.handleErrors(userNotFoundError, req, res);
                 }
-                const newToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '10min' });
-                const newRefreshToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1d' });
+                const newToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1min' });
+                const newRefreshToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
                 res.cookie('token', newToken, {
                     httpOnly: true,
                 });

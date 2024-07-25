@@ -35,8 +35,8 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
           return ErrorHandler.handleErrors(userNotFoundError, req, res);
         }
 
-        const newToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '10min' });
-        const newRefreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1d' });
+        const newToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1min' });
+        const newRefreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
 
         res.cookie('token', newToken, {
           httpOnly: true,
