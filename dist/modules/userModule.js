@@ -37,7 +37,10 @@ dotenv_1.default.config();
 const prisma = new client_1.PrismaClient();
 const catchAsync = (fn) => {
     return (req, res, next) => {
-        fn(req, res, next).catch(next);
+        fn(req, res, next).catch((err) => {
+            console.error(err);
+            next(err);
+        });
     };
 };
 class UserAuthModule {

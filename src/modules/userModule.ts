@@ -14,7 +14,10 @@ type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise
 
 const catchAsync = (fn: AsyncHandler) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    fn(req, res, next).catch(next);
+    fn(req, res, next).catch((err) => {
+      console.error(err);
+      next(err);
+    });
   };
 };
 
