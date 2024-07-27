@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 // import SMTPTransport from 'nodemailer/lib/smtp-transport';
 // const transportOPtions: SMTPTransport.Options = {
 //   host: process.env.MAIL_HOST,
@@ -16,7 +18,7 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 //   },
 // };
 const realEmailtransportOptions = {
-    service: 'gmail.com',
+    service: 'gmail',
     port: 465,
     auth: {
         user: process.env.MAIL_USER,

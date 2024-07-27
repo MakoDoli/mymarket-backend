@@ -113,7 +113,7 @@ class UserAuthModule {
         });
         this.sendEmail = catchAsync(async (req, res) => {
             const { email } = req.body;
-            const token = req.headers.authorization;
+            const token = req.cookies.token;
             if (token) {
                 (0, nodemailer_1.sendEmail)({ recipient: email, subject: 'verify your email', token: token });
             }

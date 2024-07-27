@@ -100,7 +100,7 @@ export default class UserAuthModule {
 
   sendEmail = catchAsync(async (req: Request, res: Response) => {
     const { email } = req.body;
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
 
     if (token) {
       sendEmail({ recipient: email, subject: 'verify your email', token: token });

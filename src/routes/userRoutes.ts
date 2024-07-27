@@ -27,7 +27,7 @@ router.post('/signout', signOut);
 
 router.post('/refresh', requestNewToken);
 
-router.post('/verify-email', validateRequest(sendEmailSchema), sendEmail);
+router.post('/verify-email', verifyToken, validateRequest(sendEmailSchema), sendEmail);
 
 router.get('/verify-email/:token', verifyEmail);
 
