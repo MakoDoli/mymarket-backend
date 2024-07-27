@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import ErrorHandler, { CustomError } from '../error/ErrorHandler';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../utils/prismaInstance';
 
-const prisma = new PrismaClient();
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.token;
   const refreshToken = req.headers.authorization?.split(' ')[1];

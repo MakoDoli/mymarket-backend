@@ -11,6 +11,8 @@ import rateLimit from 'express-rate-limit';
 
 // Setup express server
 const app = express();
+
+// set rate limit
 const limiter = rateLimit({
   max: 5,
   windowMs: 1 * 60 * 1000,
@@ -22,6 +24,7 @@ app.get(['/', '/status'], (_, res) => {
   res.status(200).send('Ready to serve');
 });
 
+//  Run  server
 const PORT = process.env.PORT || 3000;
 
 const expressServer = app.listen(PORT, () => {

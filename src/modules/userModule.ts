@@ -1,14 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import ErrorHandler, { CustomError } from '../error/ErrorHandler';
 import { ERROR_CODES } from '../error/errorCodes';
 import { sendEmail } from '../utils/nodemailer';
-
+import prisma from '../utils/prismaInstance';
 dotenv.config();
-const prisma = new PrismaClient();
 
 type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 

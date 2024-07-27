@@ -28,8 +28,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const ErrorHandler_1 = __importStar(require("../error/ErrorHandler"));
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const prismaInstance_1 = __importDefault(require("../utils/prismaInstance"));
 const verifyToken = async (req, res, next) => {
     const token = req.cookies.token;
     const refreshToken = req.headers.authorization?.split(' ')[1];
@@ -52,7 +51,7 @@ const verifyToken = async (req, res, next) => {
         if (err instanceof jsonwebtoken_1.default.TokenExpiredError && refreshToken) {
             try {
                 const decodedToken = jsonwebtoken_1.default.verify(refreshToken, secret);
-                const user = await prisma.user.findUnique({ where: { id: decodedToken.userId } });
+                const user = await prismaInstance_1.default.user.findUnique({ where: { id: decodedToken.userId } });
                 if (!user) {
                     const userNotFoundError = new ErrorHandler_1.CustomError('User not found', 404);
                     return ErrorHandler_1.default.handleErrors(userNotFoundError, req, res);

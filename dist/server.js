@@ -15,6 +15,7 @@ const socket_io_1 = require("socket.io");
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // Setup express server
 const app = (0, express_1.default)();
+// set rate limit
 const limiter = (0, express_rate_limit_1.default)({
     max: 5,
     windowMs: 1 * 60 * 1000,
@@ -24,6 +25,7 @@ app.use('/', limiter);
 app.get(['/', '/status'], (_, res) => {
     res.status(200).send('Ready to serve');
 });
+//  Run  server
 const PORT = process.env.PORT || 3000;
 const expressServer = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
