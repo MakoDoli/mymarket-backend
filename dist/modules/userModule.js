@@ -26,15 +26,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const ErrorHandler_1 = __importStar(require("../error/ErrorHandler"));
 const errorCodes_1 = require("../error/errorCodes");
 const nodemailer_1 = require("../utils/nodemailer");
+const prismaInstance_1 = __importDefault(require("../utils/prismaInstance"));
 dotenv_1.default.config();
-const prisma = new client_1.PrismaClient();
 const catchAsync = (fn) => {
     return (req, res, next) => {
         fn(req, res, next).catch(next);
@@ -44,7 +43,7 @@ class UserAuthModule {
     constructor() {
         this.login = catchAsync(async (req, res) => {
             const { email, password } = req.body;
-            const user = await prisma.user.findUnique({ where: { email } });
+            const user = await prismaInstance_1.default.user.findUnique({ where: { email } });
             if (!user) {
                 const wrongUser = new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongUser, 404);
                 return ErrorHandler_1.default.handleErrors(wrongUser, req, res);
@@ -70,7 +69,7 @@ class UserAuthModule {
                 // maxAge: 1000000,
                 // signed: true,
             })
-                .header('Authorization', 'Bearer ' + refreshToken);
+                .cookie('refreshToken', refreshToken);
             res.json({ status: 'success', token });
             console.log(user.email);
         });
@@ -78,7 +77,7 @@ class UserAuthModule {
             const { email, password } = req.body;
             console.log(email, password);
             const hashedPassword = await bcrypt_1.default.hash(password, 10);
-            const user = await prisma.user.create({
+            const user = await prismaInstance_1.default.user.create({
                 data: {
                     email,
                     password: hashedPassword,
@@ -90,6 +89,11 @@ class UserAuthModule {
             }
             res.status(200).json({ status: 'success', message: 'User was successfully created' });
         });
+        this.signOut = catchAsync(async (_, res) => {
+            res.clearCookie('token');
+            res.clearCookie('refreshToken');
+            res.status(200).json({ status: 'success', message: 'User was successfully logged out' });
+        });
         this.requestNewToken = catchAsync(async (req, res) => {
             const refreshToken = req.cookies['refreshToken'];
             if (!refreshToken) {
@@ -100,7 +104,7 @@ class UserAuthModule {
                 return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.noSecret, 400), req, res);
             }
             const decodedToken = jsonwebtoken_1.default.verify(refreshToken, secret);
-            const user = await prisma.user.findUnique({ where: { id: decodedToken.userId } });
+            const user = await prismaInstance_1.default.user.findUnique({ where: { id: decodedToken.userId } });
             if (!user) {
                 return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.invalidToken, 400), req, res);
             }
@@ -117,12 +121,12 @@ class UserAuthModule {
         });
         this.resetPassword = catchAsync(async (req, res) => {
             const { email, newPassword } = req.body;
-            const user = await prisma.user.findUnique({ where: { email } });
+            const user = await prismaInstance_1.default.user.findUnique({ where: { email } });
             if (!user) {
                 return ErrorHandler_1.default.handleErrors(new ErrorHandler_1.CustomError(errorCodes_1.ERROR_CODES.wrongUser, 400), req, res);
             }
             const hashedPassword = await bcrypt_1.default.hash(newPassword, 10);
-            await prisma.user.update({
+            await prismaInstance_1.default.user.update({
                 where: { email },
                 data: { password: hashedPassword },
             });
@@ -141,7 +145,7 @@ class UserAuthModule {
             }
             const verifiedUSer = jsonwebtoken_1.default.verify(token, secret);
             console.log(verifiedUSer);
-            const user = await prisma.user.update({
+            const user = await prismaInstance_1.default.user.update({
                 where: { id: verifiedUSer.userId },
                 data: { emailVerified: true },
             });

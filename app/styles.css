@@ -85,11 +85,18 @@ li:nth-child(odd) {
 .active {
   display: inline-block;
 }
+.show-login {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .hidden {
   display: none;
 }
-.show-login {
-  margin: 5px 0;
+
+.signout-button {
+  margin-top: 15px;
 }
 .logged-in-dot,
 .signin-dot,

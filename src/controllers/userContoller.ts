@@ -13,6 +13,10 @@ export async function signIn(req: Request, res: Response, next: NextFunction) {
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   authService.signup(req, res, next);
 }
+
+export async function signOut(req: Request, res: Response, next: NextFunction) {
+  authService.signOut(req, res, next);
+}
 export async function requestNewToken(req: Request, res: Response, next: NextFunction) {
   authService.requestNewToken(req, res, next);
 }
