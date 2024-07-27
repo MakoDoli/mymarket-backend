@@ -12,6 +12,9 @@ class UserAuthService {
     signup(req, res, next) {
         userAuthModule.signUp(req, res, next);
     }
+    signOut(req, res, next) {
+        userAuthModule.signOut(req, res, next);
+    }
     requestNewToken(req, res, next) {
         userAuthModule.requestNewToken(req, res, next);
     }

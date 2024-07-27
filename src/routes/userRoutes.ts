@@ -6,6 +6,7 @@ import {
   verifyEmail,
   sendEmail,
   requestNewToken,
+  signOut,
 } from '../controllers/userContoller';
 import { validateRequest } from '../middleware/validateRequest';
 import {
@@ -21,6 +22,8 @@ const router = Router();
 router.post('/signup', validateRequest(signUpSchema), signUp);
 
 router.post('/signin', validateRequest(signInSchema), signIn);
+
+router.post('/signout', verifyToken, signOut);
 
 router.post('/refresh', requestNewToken);
 

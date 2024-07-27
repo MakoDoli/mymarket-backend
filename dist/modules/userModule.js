@@ -89,6 +89,11 @@ class UserAuthModule {
             }
             res.status(200).json({ status: 'success', message: 'User was successfully created' });
         });
+        this.signOut = catchAsync(async (_, res) => {
+            res.clearCookie('token');
+            res.clearCookie('refreshToken');
+            res.status(200).json({ status: 'success', message: 'User was successfully logged out' });
+        });
         this.requestNewToken = catchAsync(async (req, res) => {
             const refreshToken = req.cookies['refreshToken'];
             if (!refreshToken) {
