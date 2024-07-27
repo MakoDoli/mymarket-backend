@@ -31,7 +31,8 @@ const ErrorHandler_1 = __importStar(require("../error/ErrorHandler"));
 const prismaInstance_1 = __importDefault(require("../utils/prismaInstance"));
 const verifyToken = async (req, res, next) => {
     const token = req.cookies.token;
-    const refreshToken = req.headers.authorization?.split(' ')[1];
+    const refreshToken = req.cookies.refreshToken;
+    console.log(refreshToken);
     if (!token) {
         const noTokenError = new ErrorHandler_1.CustomError('Token not provided', 401);
         return ErrorHandler_1.default.handleErrors(noTokenError, req, res);
@@ -48,7 +49,9 @@ const verifyToken = async (req, res, next) => {
         return next();
     }
     catch (err) {
+        console.log('REFRESHTOKEN ERROR STARTS HERE 💥 ' + err);
         if (err instanceof jsonwebtoken_1.default.TokenExpiredError && refreshToken) {
+            console.log('JWT EXPIRED ERROR STARTS HERE 🥶 ');
             try {
                 const decodedToken = jsonwebtoken_1.default.verify(refreshToken, secret);
                 const user = await prismaInstance_1.default.user.findUnique({ where: { id: decodedToken.userId } });
@@ -58,10 +61,13 @@ const verifyToken = async (req, res, next) => {
                 }
                 const newToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1min' });
                 const newRefreshToken = jsonwebtoken_1.default.sign({ userId: user.id }, secret, { expiresIn: '1h' });
-                res.cookie('token', newToken, {
+                console.log('NEW TOKEN 🎀 ' + token);
+                res
+                    .cookie('token', newToken, {
                     httpOnly: true,
-                });
-                res.header('Authorization', 'Bearer ' + newRefreshToken);
+                })
+                    .cookie('refreshToken', newRefreshToken);
+                // res.header('Authorization', 'Bearer ' + newRefreshToken);
                 //req.userId = user.id;
                 return next();
             }

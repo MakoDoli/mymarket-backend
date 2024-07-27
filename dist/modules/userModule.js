@@ -69,7 +69,7 @@ class UserAuthModule {
                 // maxAge: 1000000,
                 // signed: true,
             })
-                .header('Authorization', 'Bearer ' + refreshToken);
+                .cookie('refreshToken', refreshToken);
             res.json({ status: 'success', token });
             console.log(user.email);
         });
