@@ -53,7 +53,7 @@ export default class UserAuthModule {
       })
       .header('Authorization', 'Bearer ' + refreshToken);
     res.json({ status: 'success', token });
-    console.log(user);
+    console.log(user.email);
   });
 
   signUp = catchAsync(async (req: Request, res: Response) => {

@@ -72,7 +72,7 @@ class UserAuthModule {
             })
                 .header('Authorization', 'Bearer ' + refreshToken);
             res.json({ status: 'success', token });
-            console.log(user);
+            console.log(user.email);
         });
         this.signUp = catchAsync(async (req, res) => {
             const { email, password } = req.body;
