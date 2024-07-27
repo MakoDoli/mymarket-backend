@@ -17,7 +17,7 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const app = (0, express_1.default)();
 // set rate limit
 const limiter = (0, express_rate_limit_1.default)({
-    max: 5,
+    max: 100,
     windowMs: 1 * 60 * 1000,
     message: 'Too many requests from this IP, please try again later.',
 });

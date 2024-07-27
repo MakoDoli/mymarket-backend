@@ -30,9 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const showLogin = document.querySelector('.show-login');
 
   const signupButton = document.querySelector('.signup-button');
+  const signoutButton = document.querySelector('.signout-button');
 
   const loginForm = document.querySelector('.loginForm');
   const signupForm = document.querySelector('.signupForm');
+
   checkAuthStatus();
   // Event Listeners
   loginButton.addEventListener('click', () => {
@@ -45,6 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
     signupButton.classList.remove('active');
     loginButton.classList.remove('active');
     signupForm.classList.remove('hidden');
+  });
+
+  signoutButton.addEventListener('click', async () => {
+    signupButton.classList.add('active');
+    loginButton.classList.add('active');
+    showLogin.classList.add('hidden');
+    try {
+      const data = await signout();
+
+      if (data.status === 'success') window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   //   SIGN -IN
@@ -60,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showLogin.classList.add('active');
       loginButton.classList.remove('active');
       signupButton.classList.add('active');
+
       window.location.reload();
     }
     if (data.status === 'fail') {
@@ -97,7 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await fetch('http://localhost:3000/api/users/check-auth');
       const data = await res.json();
-      if (data.statusCode === 401) throw new Error('Unauthorized');
+      if (data.statusCode === 401) {
+        showLogin.classList.add('hidden');
+        throw new Error('Unauthorized');
+      }
       if (data.authenticated) {
         loginButton.classList.remove('active');
         showLogin.classList.remove('hidden');
@@ -110,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loginButton.classList.add('active');
       signupButton.classList.add('active');
       sendButton.classList.add('hidden');
+      showLogin.classList.add('hidden');
       console.error('Failed to check authentication', err);
       return;
     }
@@ -148,6 +168,23 @@ document.addEventListener('DOMContentLoaded', () => {
       return data;
     } catch (err) {
       console.error('Failed to sign up', err);
+    }
+  }
+
+  async function signout() {
+    try {
+      const res = await fetch('http://localhost:3000/api/users/signout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Adding appropriate headers
+        },
+      });
+      const data = await res.json();
+      console.log(data.status);
+      return data;
+    } catch (err) {
+      alert('You are not logged in');
+      console.error('Failed to sign out', err);
     }
   }
 });

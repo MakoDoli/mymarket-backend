@@ -23,7 +23,7 @@ router.post('/signup', validateRequest(signUpSchema), signUp);
 
 router.post('/signin', validateRequest(signInSchema), signIn);
 
-router.post('/signout', verifyToken, signOut);
+router.post('/signout', signOut);
 
 router.post('/refresh', requestNewToken);
 
