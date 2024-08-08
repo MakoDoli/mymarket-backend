@@ -45,9 +45,6 @@ export default class UserAuthModule {
     res
       .cookie('token', token, {
         httpOnly: true,
-        // secure: true,
-        // maxAge: 1000000,
-        // signed: true,
       })
       .cookie('refreshToken', refreshToken);
     res.json({ status: 'success', token });
