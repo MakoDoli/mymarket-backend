@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import ErrorHandler, { CustomError } from '../error/ErrorHandler';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../utils/prismaInstance';
 
-const prisma = new PrismaClient();
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.token;
-  const refreshToken = req.headers.authorization?.split(' ')[1];
+  const refreshToken = req.cookies.refreshToken;
+  console.log(refreshToken);
 
   if (!token) {
     const noTokenError = new CustomError('Token not provided', 401);
@@ -25,7 +25,9 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     //req.userId = decoded.userId;
     return next();
   } catch (err) {
+    console.log('REFRESHTOKEN ERROR STARTS HERE 💥 ' + err);
     if (err instanceof jwt.TokenExpiredError && refreshToken) {
+      console.log('JWT EXPIRED ERROR STARTS HERE 🥶 ');
       try {
         const decodedToken = jwt.verify(refreshToken, secret) as { userId: number };
         const user = await prisma.user.findUnique({ where: { id: decodedToken.userId } });
@@ -35,14 +37,16 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
           return ErrorHandler.handleErrors(userNotFoundError, req, res);
         }
 
-        const newToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '10min' });
-        const newRefreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1d' });
+        const newToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1min' });
+        const newRefreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+        console.log('NEW TOKEN 🎀 ' + token);
+        res
+          .cookie('token', newToken, {
+            httpOnly: true,
+          })
+          .cookie('refreshToken', newRefreshToken);
 
-        res.cookie('token', newToken, {
-          httpOnly: true,
-        });
-
-        res.header('Authorization', 'Bearer ' + newRefreshToken);
+        // res.header('Authorization', 'Bearer ' + newRefreshToken);
 
         //req.userId = user.id;
         return next();

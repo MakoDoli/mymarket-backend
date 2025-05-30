@@ -1,14 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import ErrorHandler, { CustomError } from '../error/ErrorHandler';
 import { ERROR_CODES } from '../error/errorCodes';
 import { sendEmail } from '../utils/nodemailer';
-
+import prisma from '../utils/prismaInstance';
 dotenv.config();
-const prisma = new PrismaClient();
 
 type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
@@ -41,19 +39,16 @@ export default class UserAuthModule {
 
     //          SENDING JWT
 
-    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '10min' });
+    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1min' });
     const refreshToken = jwt.sign({ userId: user.id }, secret, { expiresIn: '1d' });
     console.log(refreshToken);
     res
       .cookie('token', token, {
         httpOnly: true,
-        // secure: true,
-        // maxAge: 1000000,
-        // signed: true,
       })
-      .header('Authorization', 'Bearer ' + refreshToken);
+      .cookie('refreshToken', refreshToken);
     res.json({ status: 'success', token });
-    console.log(user);
+    console.log(user.email);
   });
 
   signUp = catchAsync(async (req: Request, res: Response) => {
@@ -73,6 +68,12 @@ export default class UserAuthModule {
       return ErrorHandler.handleErrors(newUserError, req, res);
     }
     res.status(200).json({ status: 'success', message: 'User was successfully created' });
+  });
+
+  signOut = catchAsync(async (_: Request, res: Response) => {
+    res.clearCookie('token');
+    res.clearCookie('refreshToken');
+    res.status(200).json({ status: 'success', message: 'User was successfully logged out' });
   });
 
   requestNewToken = catchAsync(async (req: Request, res: Response) => {
@@ -96,7 +97,7 @@ export default class UserAuthModule {
 
   sendEmail = catchAsync(async (req: Request, res: Response) => {
     const { email } = req.body;
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
 
     if (token) {
       sendEmail({ recipient: email, subject: 'verify your email', token: token });

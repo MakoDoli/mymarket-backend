@@ -6,6 +6,7 @@ import {
   verifyEmail,
   sendEmail,
   requestNewToken,
+  signOut,
 } from '../controllers/userContoller';
 import { validateRequest } from '../middleware/validateRequest';
 import {
@@ -22,9 +23,11 @@ router.post('/signup', validateRequest(signUpSchema), signUp);
 
 router.post('/signin', validateRequest(signInSchema), signIn);
 
+router.post('/signout', signOut);
+
 router.post('/refresh', requestNewToken);
 
-router.post('/verify-email', validateRequest(sendEmailSchema), sendEmail);
+router.post('/verify-email', verifyToken, validateRequest(sendEmailSchema), sendEmail);
 
 router.get('/verify-email/:token', verifyEmail);
 

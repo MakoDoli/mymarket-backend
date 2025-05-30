@@ -1,4 +1,7 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+
+dotenv.config();
 // import SMTPTransport from 'nodemailer/lib/smtp-transport';
 // const transportOPtions: SMTPTransport.Options = {
 //   host: process.env.MAIL_HOST,
@@ -11,7 +14,7 @@ import nodemailer from 'nodemailer';
 // };
 
 const realEmailtransportOptions = {
-  service: 'gmail.com',
+  service: 'gmail',
   port: 465,
   auth: {
     user: process.env.MAIL_USER,

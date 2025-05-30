@@ -10,6 +10,9 @@ export default class UserAuthService {
   signup(req: Request, res: Response, next: NextFunction) {
     userAuthModule.signUp(req, res, next);
   }
+  signOut(req: Request, res: Response, next: NextFunction) {
+    userAuthModule.signOut(req, res, next);
+  }
   requestNewToken(req: Request, res: Response, next: NextFunction) {
     userAuthModule.requestNewToken(req, res, next);
   }

@@ -7,14 +7,24 @@ import cookieParser from 'cookie-parser';
 import ErrorHandler from './error/ErrorHandler';
 import path from 'path';
 import { Server } from 'socket.io';
+import rateLimit from 'express-rate-limit';
 
 // Setup express server
 const app = express();
 
+// set rate limit
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 1 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again later.',
+});
+
+app.use('/', limiter);
 app.get(['/', '/status'], (_, res) => {
   res.status(200).send('Ready to serve');
 });
 
+//  Run  server
 const PORT = process.env.PORT || 3000;
 
 const expressServer = app.listen(PORT, () => {
@@ -41,6 +51,7 @@ io.on('connection', (socket) => {
 app.use(express.static(path.join(__dirname, '..', 'app')));
 
 // Middleware
+
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(bodyParser.json());

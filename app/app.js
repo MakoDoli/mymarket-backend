@@ -30,9 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const showLogin = document.querySelector('.show-login');
 
   const signupButton = document.querySelector('.signup-button');
+  const signoutButton = document.querySelector('.signout-button');
 
   const loginForm = document.querySelector('.loginForm');
   const signupForm = document.querySelector('.signupForm');
+
   checkAuthStatus();
   // Event Listeners
   loginButton.addEventListener('click', () => {
@@ -47,9 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
     signupForm.classList.remove('hidden');
   });
 
+  signoutButton.addEventListener('click', async () => {
+    signupButton.classList.add('active');
+    loginButton.classList.add('active');
+    showLogin.classList.add('hidden');
+    try {
+      const data = await signout();
+
+      if (data.status === 'success') window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
   //   SIGN -IN
-  loginForm.addEventListener('submit', async () => {
-    //event.preventDefault();
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
     const formData = new FormData(loginForm);
     const email = formData.get('email');
@@ -60,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showLogin.classList.add('active');
       loginButton.classList.remove('active');
       signupButton.classList.add('active');
+
       window.location.reload();
     }
     if (data.status === 'fail') {
@@ -99,7 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/check-auth',
       );
       const data = await res.json();
-      if (data.statusCode === 401) throw new Error('Unauthorized');
+      if (data.statusCode === 401) {
+        showLogin.classList.add('hidden');
+        throw new Error('Unauthorized');
+      }
       if (data.authenticated) {
         loginButton.classList.remove('active');
         showLogin.classList.remove('hidden');
@@ -111,7 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       loginButton.classList.add('active');
       signupButton.classList.add('active');
+
       //sendButton.classList.add('hidden');
+
       console.error('Failed to check authentication', err);
       return;
     }
@@ -155,7 +176,24 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(data);
       return data;
     } catch (err) {
-      console.error('Failed to sign in', err);
+      console.error('Failed to sign up', err);
+    }
+  }
+
+  async function signout() {
+    try {
+      const res = await fetch('http://localhost:3000/api/users/signout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Adding appropriate headers
+        },
+      });
+      const data = await res.json();
+      console.log(data.status);
+      return data;
+    } catch (err) {
+      alert('You are not logged in');
+      console.error('Failed to sign out', err);
     }
   }
 });
