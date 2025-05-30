@@ -21,7 +21,7 @@ const limiter = rateLimit({
 
 app.use('/', limiter);
 app.get(['/', '/status'], (_, res) => {
-  res.status(200).send('Ready to serve');
+  res.status(200).send('<h1 style="color: purple">Ready to serve 🎀</h1>');
 });
 
 //  Run  server
