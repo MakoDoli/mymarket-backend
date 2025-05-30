@@ -1,4 +1,4 @@
-const socket = io('ws://localhost:3000');
+const socket = io('ws://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com');
 
 document.querySelector('.message-form').addEventListener('submit', sendMessage);
 
@@ -24,7 +24,7 @@ socket.addEventListener('message', (message) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const sendButton = document.querySelector('.send-button');
+  //const sendButton = document.querySelector('.send-button');
   const loginButton = document.querySelector('.login-button');
 
   const showLogin = document.querySelector('.show-login');
@@ -111,7 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function checkAuthStatus() {
     try {
-      const res = await fetch('http://localhost:3000/api/users/check-auth');
+      const res = await fetch(
+        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/check-auth',
+      );
       const data = await res.json();
       if (data.statusCode === 401) {
         showLogin.classList.add('hidden');
@@ -121,15 +123,16 @@ document.addEventListener('DOMContentLoaded', () => {
         loginButton.classList.remove('active');
         showLogin.classList.remove('hidden');
         signupButton.classList.remove('active');
-        sendButton.classList.remove('hidden');
+        //sendButton.classList.remove('hidden');
       }
       console.log(data);
       return data.authenticated;
     } catch (err) {
       loginButton.classList.add('active');
       signupButton.classList.add('active');
-      sendButton.classList.add('hidden');
-      showLogin.classList.add('hidden');
+
+      //sendButton.classList.add('hidden');
+
       console.error('Failed to check authentication', err);
       return;
     }
@@ -137,13 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function signin(email, password) {
     try {
-      const res = await fetch('http://localhost:3000/api/users/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await fetch(
+        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/signin',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
         },
-        body: JSON.stringify({ email, password }),
-      });
+      );
       const data = await res.json();
 
       console.log(data);
@@ -155,13 +161,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function signup(email, password) {
     try {
-      const res = await fetch('http://localhost:3000/api/users/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await fetch(
+        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/signup',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
         },
-        body: JSON.stringify({ email, password }),
-      });
+      );
       const data = await res.json();
 
       console.log(data);
