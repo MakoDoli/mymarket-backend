@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function checkAuthStatus() {
     try {
       const res = await fetch(
-        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com/api/users/check-auth',
+        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/check-auth',
       );
       const data = await res.json();
       if (data.statusCode === 401) throw new Error('Unauthorized');
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function signin(email, password) {
     try {
       const res = await fetch(
-        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com/api/users/signin',
+        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/signin',
         {
           method: 'POST',
           headers: {
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function signup(email, password) {
     try {
       const res = await fetch(
-        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com/api/users/signup',
+        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/signup',
         {
           method: 'POST',
           headers: {
