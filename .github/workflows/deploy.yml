@@ -28,5 +28,5 @@ jobs:
             git pull origin main
             npm install
             npm run build   # Only if using TypeScript
-            pm2 restart server || pm2 start dist/server.js --name server
+            pm2 restart express-server || pm2 start dist/server.js --name express-server
           EOF
