@@ -1,4 +1,4 @@
-const socket = io('ws://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com');
+const socket = io('ws://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000');
 
 document.querySelector('.message-form').addEventListener('submit', sendMessage);
 
