@@ -1,5 +1,4 @@
-//const socket = io('ws://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com');
-const socket = io('ws://localhost:3000');
+const socket = io('ws://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com');
 
 document.querySelector('.message-form').addEventListener('submit', sendMessage);
 
@@ -183,12 +182,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function signout() {
     try {
-      const res = await fetch('http://localhost:3000/api/users/signout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Adding appropriate headers
+      const res = await fetch(
+        'http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/signout',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', // Adding appropriate headers
+          },
         },
-      });
+      );
       const data = await res.json();
       console.log(data.status);
       return data;

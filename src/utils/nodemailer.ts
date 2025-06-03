@@ -30,7 +30,7 @@ type Props = {
 };
 
 export const sendEmail = async ({ recipient, subject, token }: Props) => {
-  const link = `http://localhost:3000/api/users/verify-email/${token}`;
+  const link = `http://ec2-51-20-85-158.eu-north-1.compute.amazonaws.com:3000/api/users/verify-email/${token}`;
   try {
     await transport.sendMail({
       from: process.env.MAIL_USER,
